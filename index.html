@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be my Valentine?</title>
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌹</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #F8BBD0; /* Baby pink background */
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            overflow-x: hidden; /* Hide horizontal scroll */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .rose {
+            position: fixed;
+            font-size: 24px; /* Adjust the size of the rose emoji */
+            animation: fall linear infinite; /* Animation applied to each rose */
+            z-index: 0; /* Ensure roses fall behind the box */
+        }
+        @keyframes fall {
+            0% {
+                top: -10%;
+            }
+            100% {
+                top: 110%;
+            }
+        }
+        .center-box {
+            position: relative;
+            width: 400px;
+            height: auto; /* Adjust height based on content */
+            background-color: white;
+            border: 2px solid black;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border-top-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            z-index: 1; /* Box appears above roses */
+            box-shadow: 5px 5px 10px rgba(0,0,0,0.5);
+            padding: 20px;
+            gap: 20px;
+        }
+        .question h2 {
+            font-style: italic; /* Italicize questions */
+        }
+		.options {
+		    display: flex;
+		    justify-content: center; /* Center the buttons horizontally */
+		    gap: 10px; /* Space between option buttons */
+		}
+        .questionnaire button {
+            background-color: black;
+            color: white;
+            border: none;
+            border-top-right-radius: 20px;
+            border-bottom-left-radius: 20px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 700;
+            outline: none;
+            transition: transform 0.3s ease;
+        }
+        .questionnaire button.selected {
+            background-color: #444;
+        }
+        .questionnaire button:hover {
+            transform: scale(1.1);
+        }
+        .next, .be-my-valentine {
+            padding: 10px 20px; /* Match padding for visual consistency */
+            margin-top: 20px; /* Space from the options to the next button */
+        }
+        .hide {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="center-box">
+    <div class="questionnaire">
+        <div class="question" id="question1">
+            <h2>HOW MUCH DO YOU LOVE ME?</h2>
+            <div class="options">
+                <button onclick="selectOption(1, 'a')">A lot</button>
+                <button onclick="selectOption(1, 'b')">INSANELY MUCH</button>
+            </div>
+            <button class="next hide" onclick="nextQuestion(1)">Next</button>
+        </div>
+        <div class="question hide" id="question2">
+            <h2>AM I THE BEST BOYFRIEND?</h2>
+            <div class="options">
+                <button onclick="selectOption(2, 'a')">YES</button>
+                <button onclick="selectOption(2, 'b')">ABSOLUTELY</button>
+            </div>
+            <button class="next hide" onclick="nextQuestion(2)">Next</button>
+        </div>
+        <div class="question hide" id="question3">
+            <h2>WILL YOU BE MY VALENTINE?</h2>
+            <div class="options">
+                <button onclick="selectOption(3, 'a')">YES</button>
+                <button onclick="selectOption(3, 'b')">You don't have a choice so YES</button>
+            </div>
+            <button class="be-my-valentine hide" onclick="beMyValentine()">BE MY VALENTINE</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let selections = { 1: [], 2: '', 3: '' };
+
+    function createRose() {
+        const rose = document.createElement('div');
+        rose.classList.add('rose');
+        rose.textContent = '🌹';
+        document.body.appendChild(rose);
+
+        const startX = Math.random() * window.innerWidth;
+        const duration = Math.random() * 5 + 5;
+        const scale = Math.random() + 0.5;
+
+        rose.style.left = `${startX}px`;
+        rose.style.fontSize = `${scale}em`;
+        rose.style.animationDuration = `${duration}s`;
+
+        setTimeout(() => { rose.remove(); }, duration * 1000);
+    }
+
+    function selectOption(questionNumber, option) {
+        const isSelected = selections[questionNumber].includes(option);
+        if(questionNumber === 1) {
+            if(isSelected) {
+                selections[questionNumber] = selections[questionNumber].filter(o => o !== option);
+            } else {
+                selections[questionNumber].push(option);
+            }
+        } else {
+            selections[questionNumber] = [option];
+        }
+        updateSelections(questionNumber);
+    }
+
+    function updateSelections(questionNumber) {
+        const options = document.getElementById(`question${questionNumber}`).querySelectorAll('.options button');
+        options.forEach(button => {
+            const optionValue = button.textContent === 'A lot' ? 'a' : button.textContent === 'INSANELY MUCH' ? 'b' : button.textContent === 'YES' ? 'a' : 'b';
+            if(selections[questionNumber].includes(optionValue)) {
+                button.classList.add('selected');
+            } else {
+                button.classList.remove('selected');
+            }
+        });
+        
+        const nextButton = document.getElementById(`question${questionNumber}`).querySelector('.next');
+        const beMyValentineButton = document.getElementById(`question${questionNumber}`).querySelector('.be-my-valentine');
+        if(questionNumber === 1 && selections[1].length === 2 || questionNumber !== 1 && selections[questionNumber].length > 0) {
+            nextButton && nextButton.classList.remove('hide');
+            beMyValentineButton && beMyValentineButton.classList.remove('hide');
+        } else {
+            nextButton && nextButton.classList.add('hide');
+            beMyValentineButton && beMyValentineButton.classList.add('hide');
+        }
+    }
+
+    function nextQuestion(currentQuestion) {
+        const current = document.getElementById(`question${currentQuestion}`);
+        const next = document.getElementById(`question${currentQuestion + 1}`);
+        if(currentQuestion === 1 && selections[1].length < 2) {
+            alert('Please select both options to proceed.');
+            return;
+        }
+        if (current && next) {
+            current.classList.add('hide');
+            next.classList.remove('hide');
+        }
+    }
+
+    function beMyValentine() {
+        alert('Get ready for a dinner date at 9 pm!');
+        // Here you can redirect or perform another action
+    }
+
+    setInterval(createRose, 300); // Start creating roses
+</script>
+
+</body>
+</html>
