@@ -31,19 +31,22 @@
                 top: 110%;
             }
         }
-        @media (max-width: 600px) {
+        @media only screen and (max-width: 768px) {
     .center-box {
-        width: 90%; /* Adjust the box width on smaller screens */
-        padding: 10px; /* Reduce padding for more space */
+        width: 85%; /* Adjust the box width for mobile screens */
+        max-width: 350px; /* Ensures box doesn't become too large on small devices */
+        padding: 15px; /* Adjust padding to ensure content fits well */
+        box-sizing: border-box; /* Ensures padding is included in the width calculation */
     }
 
-    .questionnaire button {
-        padding: 8px 16px; /* Adjust button padding for smaller screens */
-        font-size: 14px; /* Adjust font size for readability */
+    .options {
+        flex-direction: column; /* Stack buttons vertically on smaller screens */
+        align-items: center; /* Center buttons vertically */
     }
 
-    .next, .be-my-valentine {
-        padding: 8px 16px; /* Ensure consistency in button sizing */
+    .questionnaire button, .next, .be-my-valentine {
+        width: auto; /* Allows buttons to grow with text */
+        padding: 10px; /* Adjust padding for better touch targets */
     }
 }
         .center-box {
